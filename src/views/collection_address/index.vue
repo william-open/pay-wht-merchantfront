@@ -1,0 +1,154 @@
+<template>
+  <div class="admin">
+    <el-card class="!border-none" shadow="never">
+      <el-form class="mb-[-16px]" :model="formData" inline>
+        <el-form-item label="钱包地址">
+          <el-input
+            v-model="formData.address"
+            class="w-[280px]"
+            clearable
+            @keyup.enter="resetPage"
+          />
+        </el-form-item>
+<!--        <el-form-item label="状态">-->
+<!--          <el-select class="w-[280px]" v-model="formData.role">-->
+<!--            <el-option label="全部" value="" />-->
+<!--            <el-option-->
+<!--              v-for="(item, index) in optionsData.role"-->
+<!--              :key="index"-->
+<!--              :label="item.name"-->
+<!--              :value="item.id"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+        <el-form-item>
+          <el-button type="primary" @click="resetPage">查询</el-button>
+          <el-button @click="resetParams">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card v-loading="pager.loading" class="mt-4 !border-none" shadow="never">
+      <el-button
+          v-perms="['biz:collection_address:add']"
+          type="primary"
+          @click="handleAdd"
+      >
+        <template #icon>
+          <icon name="el-icon-Plus" />
+        </template>
+        添加归集账户
+      </el-button>
+      <div class="mt-4">
+        <el-table :data="pager.lists" size="large">
+          <el-table-column label="ID" prop="id" min-width="60" />
+          <el-table-column label="主链网络" prop="chainSymbol" min-width="100" />
+          <el-table-column label="归集地址" prop="address" min-width="100" />
+          <el-table-column label="归集区间" prop="txId" min-width="100" >
+            <template #default="{ row }">
+              {{row.minAmount}} - {{row.maxAmount}}
+            </template>
+          </el-table-column>
+<!--          <el-table-column label="状态" min-width="100">-->
+<!--            <template #default="{ row }">-->
+<!--              <el-switch-->
+<!--                v-perms="['biz:collection_address:disable']"-->
+<!--                v-if="row.id != 1"-->
+<!--                :model-value="row.status"-->
+<!--                :active-value="0"-->
+<!--                :inactive-value="1"-->
+<!--                @change="changeStatus($event, row.id)"-->
+<!--              />-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+          <el-table-column label="操作" width="120" fixed="right">
+            <template #default="{ row }">
+              <el-button
+                v-perms="['biz:collection_address:balance']"
+                type="primary"
+                link
+                icon="View">
+                <router-link :to="{
+                    path: getRoutePath('biz:collection_address:balance'),
+                    query: {
+                        address: row.address
+                    }
+                 }">
+                  余额
+                </router-link>
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="flex mt-4 justify-end">
+        <pagination v-model="pager" @change="getLists" />
+      </div>
+    </el-card>
+    <edit-popup
+      v-if="showEdit"
+      ref="editRef"
+      @success="getLists"
+      @close="showEdit = false"
+    />
+  </div>
+</template>
+
+<script lang="ts" setup name="admin">
+import {collectionAddressLists, collectionAddressDetail,collectionAddressAdd } from "@/api/biz/collection_address";
+import { roleAll } from "@/api/perms/role";
+import { useDictOptions } from "@/hooks/useDictOptions";
+import { usePaging } from "@/hooks/usePaging";
+import feedback from "@/utils/feedback";
+import EditPopup from "./edit.vue";
+const editRef = shallowRef<InstanceType<typeof EditPopup>>();
+import {getRoutePath} from "@/router";
+// 表单数据
+const formData = reactive<any>({});
+const showEdit = ref(false);
+const { pager, getLists, resetParams, resetPage } = usePaging({
+  fetchFun: collectionAddressLists,
+  params: formData,
+});
+
+const changeStatus = async (active: any, id: number) => {
+  try {
+    // await feedback.confirm(`确定${active ? "停用" : "开启"}当前管理员？`);
+    // await adminStatus({ id });
+    // feedback.msgSuccess("修改成功");
+    getLists();
+  } catch (error) {
+    getLists();
+  }
+};
+const handleAdd = async () => {
+  showEdit.value = true;
+  await nextTick();
+  editRef.value?.open("add");
+};
+
+const handleEdit = async (data: any) => {
+  showEdit.value = true;
+  await nextTick();
+  editRef.value?.open("edit");
+  editRef.value?.setFormData(data);
+};
+
+const handleDelete = async (id: number) => {
+  // await feedback.confirm("确定要删除？");
+  // await adminDelete({ id });
+  // feedback.msgSuccess("删除成功");
+  getLists();
+};
+
+const { optionsData } = useDictOptions<{
+  role: any[];
+}>({
+  role: {
+    api: roleAll,
+  },
+});
+
+onMounted(() => {
+  getLists();
+});
+</script>
