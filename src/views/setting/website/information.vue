@@ -59,6 +59,14 @@
                   ></el-input>
                 </div>
               </el-form-item>
+              <el-form-item label="ApiGateway" prop="apiDoc">
+                <div class="w-80">
+                  <el-input
+                      v-model="formData.apiGateway"
+                      placeholder="请输入Api网关地址"
+                  ></el-input>
+                </div>
+              </el-form-item>
             </el-card>
         </el-form>
         <footer-btns v-perms="['setting:website:save']">
@@ -82,7 +90,8 @@ const formData = reactive({
     backdrop: '', // 登录页广告图
     shopName: '',
     shopLogo: '',
-    apiDoc: ''
+    apiDoc: '',
+    apiGateway: ''
 })
 
 // 表单验证

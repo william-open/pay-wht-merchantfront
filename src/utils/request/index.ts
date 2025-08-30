@@ -68,6 +68,7 @@ const axiosHooks: AxiosHooks = {
             case RequestCodeEnum.LOGIN_DISABLE_ERROR:
             case RequestCodeEnum.NO_PERMISSTION:
             case RequestCodeEnum.FAILED:
+            case RequestCodeEnum.GOOGLE_VERIFY_INVALID:
             case RequestCodeEnum.SYSTEM_ERROR:
                 msg && feedback.msgError(msg)
                 return Promise.reject(data)

@@ -34,6 +34,17 @@
                                 </template>
                             </el-input>
                         </el-form-item>
+                        <el-form-item prop="googleCode">
+                            <el-input           
+                                v-model="formData.googleCode"             
+                                placeholder="谷歌验证码(Google Authenticator)"
+                                @keyup.enter="handleLogin"
+                            >
+                                <template #prepend>
+                                    <icon name="el-icon-Lock" />
+                                </template>
+                            </el-input>
+                        </el-form-item>
                     </el-form>
                     <div class="mb-5">
                         <el-checkbox v-model="remAccount" label="记住账号"></el-checkbox>
@@ -68,7 +79,8 @@ const remAccount = ref(false)
 const config = computed(() => appStore.config)
 const formData = reactive({
     account: '',
-    password: ''
+    password: '',
+    googleCode: '',
 })
 const rules = {
     account: [

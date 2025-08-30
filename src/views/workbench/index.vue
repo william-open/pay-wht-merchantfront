@@ -1,5 +1,5 @@
 <template>
-    <div class="workbench">
+    <!-- <div class="workbench">
         <div class="md:flex">
             <el-card class="!border-none mb-4 md:mr-4" shadow="never">
                 <template #header>
@@ -22,7 +22,7 @@
                         rel="noopener noreferrer"
                         class="text-blue-500 hover:underline"
                     >查看接口文档</a></span>
-                  </div>
+                  </div> -->
 <!--                    <div class="flex leading-9">-->
 <!--                        <div class="w-20 felx-none">API URL</div>-->
 <!--                        <div>-->
@@ -34,8 +34,8 @@
 <!--                            </a>-->
 <!--                        </div>-->
 <!--                    </div>-->
-                </div>
-            </el-card>
+                <!-- </div>
+            </el-card> -->
 <!--            <el-card class="!border-none mb-4 flex-1" shadow="never">-->
 <!--                <template #header>-->
 <!--                    <div>-->
@@ -77,7 +77,7 @@
 <!--                    </div>-->
 <!--                </div>-->
 <!--            </el-card>-->
-        </div>
+        <!-- </div> -->
 <!--        <div class="function mb-4">-->
 <!--            <el-card class="flex-1 !border-none" shadow="never">-->
 <!--                <template #header>-->
@@ -122,7 +122,7 @@
 <!--                </div>-->
 <!--            </el-card>-->
 <!--        </div>-->
-    </div>
+    <!-- </div> -->
 </template>
 
 <script lang="ts" setup name="workbench">
