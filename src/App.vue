@@ -4,6 +4,40 @@ import zhCn from "element-plus/lib/locale/lang/zh-cn";
 import useAppStore from "./stores/modules/app";
 import useSettingStore from "./stores/modules/setting";
 import { ScreenEnum } from "./enums/appEnums";
+import { usePopupStore } from '@/stores/popup'
+import EditGooglePopup from './components/EditGooglePopup.vue'
+
+// const popupStore = usePopupStore()
+const googlePopupRef = ref<InstanceType<typeof EditGooglePopup>>()
+//
+// watchEffect(() => {
+//   if (popupStore.showGoogleBindPopup) {
+//     googlePopupRef.value?.open()
+//   }
+// })
+import { eventBus } from '@/utils/eventBus'
+
+onMounted(() => {
+  eventBus.on('open-google-popup', () => {
+    googlePopupRef.value?.open()
+  })
+})
+
+// watch(
+//     () => popupStore.showGoogleBindPopup,
+//     (val) => {
+//       alert("watch:"+popupStore.showGoogleBindPopup)
+//       if (val) {
+//
+//         googlePopupRef.value?.open()
+//       }
+//     }
+// )
+
+function onBindSuccess() {
+  popupStore.closeGoogleBindPopup()
+}
+
 const appStore = useAppStore();
 const settingStore = useSettingStore();
 const elConfig = {
@@ -53,6 +87,8 @@ watch(
   <el-config-provider :locale="elConfig.locale" :z-index="elConfig.zIndex">
     <router-view />
   </el-config-provider>
+<!--  <EditGooglePopup v-if="popupStore.showGoogleBindPopup" ref="googlePopupRef" @success="onBindSuccess" />-->
+  <EditGooglePopup ref="googlePopupRef" @success="onBindSuccess" />
 </template>
 
 <style></style>

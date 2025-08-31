@@ -23,6 +23,7 @@ export enum RequestCodeEnum {
     TOKEN_EMPTY = 332, // TOKEN参数为空
     TOKEN_INVALID = 333, // TOKEN参数无效
     GOOGLE_VERIFY_INVALID = 334, // 谷歌验证码验证无效
+    Need_Bind_GOOGLE_VERIFY = 335, // 需要绑定谷歌验证码
     NO_PERMISSTION = 403, //无相关权限
     REQUEST_404_ERROR = 404, //请求接口不存在
     SYSTEM_ERROR = 500 //系统错误

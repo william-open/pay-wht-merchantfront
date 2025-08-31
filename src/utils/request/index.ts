@@ -9,7 +9,8 @@ import NProgress from 'nprogress'
 import { AxiosError, type AxiosRequestConfig } from 'axios'
 import router from '@/router'
 import { PageEnum } from '@/enums/pageEnum'
-
+import { usePopupStore } from '@/stores/popup'
+import {eventBus} from "@/utils/eventBus";
 // 处理axios的钩子函数
 const axiosHooks: AxiosHooks = {
     requestInterceptorsHook(config) {
@@ -52,6 +53,7 @@ const axiosHooks: AxiosHooks = {
             return response.data
         }
         const { code, data, show, msg } = response.data
+        console.log('响应 code:', code)
         switch (code) {
             case RequestCodeEnum.SUCCESS:
                 if (show) {
@@ -78,7 +80,14 @@ const axiosHooks: AxiosHooks = {
                 clearAuthInfo()
                 router.push(PageEnum.LOGIN)
                 return Promise.reject()
-
+            case RequestCodeEnum.Need_Bind_GOOGLE_VERIFY:
+                // alert("拦截器GOOGLE");
+                // const popupStore = usePopupStore()
+                // popupStore.openGoogleBindPopup()
+                // return Promise.reject()
+                console.log("拦截器GOOGLE")
+                eventBus.emit('open-google-popup')
+                return Promise.reject()
             default:
                 return data
         }

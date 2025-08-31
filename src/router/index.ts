@@ -108,4 +108,23 @@ const router = createRouter({
     routes: constantRoutes
 })
 
+// router.beforeEach((to, from, next) => {
+//     const userStore = useUserStore()
+//
+//     // // 已登录但未绑定谷歌验证器
+//     // if (userStore.isLoggedIn && !userStore.googleBound && to.path !== '/bind-google') {
+//     //     // 可以选择跳转，也可以弹窗提示
+//     //     next({
+//     //         path: '/bind-google',
+//     //         query: { redirect: to.fullPath }
+//     //     })
+//     // } else {
+//     //     next()
+//     // }
+//     next({
+//         path: '/bind-google',
+//         query: { redirect: to.fullPath }
+//     })
+// })
+
 export default router
