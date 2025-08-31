@@ -35,10 +35,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         component: () => import('@/views/account/login.vue')
     },
     {
-        path: PageEnum.BIND_GOOGLE,
-        component: () => import('@/views/account/bindGoogle.vue')
-    },
-    {
         path: '/user',
         component: LAYOUT,
         children: [
