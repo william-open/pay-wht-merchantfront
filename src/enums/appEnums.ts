@@ -11,6 +11,17 @@ export enum MenuEnum {
     BUTTON = 'A'
 }
 
+export enum AccountFinanceType {
+    RECEIVE = 1,
+    PAYOUT = 2,
+}
+
+export enum AuditStatus {
+    PENDING = 1,
+    SUCCESS = 2,
+    REFUND = 3,
+}
+
 // 屏幕
 export enum ScreenEnum {
     SM = 640,

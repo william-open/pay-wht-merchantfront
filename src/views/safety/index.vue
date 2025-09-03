@@ -44,11 +44,11 @@ const editGoogleRef = shallowRef<InstanceType<typeof EditGooglePopup>>()
   // 修改支付密码
 const handlePayPwd = () => {
   // 子组件已暴露 open 方法，可以直接调用
-  editPayPwdRef.value?.open('payPwd')
+  editPayPwdRef.value?.open()
 }
 //修改谷歌验证码
 const handleGoogleCode = () => {
   // 子组件已暴露 open 方法，可以直接调用
-  editGoogleRef.value?.open('googleCode')
+  editGoogleRef.value?.open()
 }
 </script>
