@@ -58,7 +58,7 @@
     <el-card v-loading="pager.loading" class="mt-4 !border-none" shadow="never">
       <div class="mt-4">
         <el-table :data="pager.lists" size="large">
-    
+
           <el-table-column label="通道类型" prop="type" min-width="100">
             <template #default="{ row }">
               <el-tag v-if="row.type == 1">代收</el-tag>
@@ -68,14 +68,14 @@
           <el-table-column label="产品名称" prop="channelTitle"/>
           <el-table-column label="通道编码" prop="channelCode" />
           <el-table-column label="国家" prop="country"/>
-          <el-table-column label="金额范围" prop="orderRange" />
+<!--          <el-table-column label="金额范围" prop="orderRange" />-->
           <el-table-column label="费率" prop="toAddress">
             <template #default="{ row }">
               <span>{{ row.defaultRate }}% + {{row.singleFee}}</span>
             </template>
           </el-table-column>
-        
-  
+
+
 <!--          <el-table-column label="交易数量" prop="amount" min-width="100" />-->
 <!--          <el-table-column label="交易类型" prop="dept" min-width="100" />-->
 <!--          <el-table-column label="交易状态" min-width="100">-->
