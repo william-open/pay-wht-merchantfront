@@ -10,21 +10,24 @@ import { AxiosError, type AxiosRequestConfig } from 'axios'
 import router from '@/router'
 import { PageEnum } from '@/enums/pageEnum'
 import { usePopupStore } from '@/stores/popup'
-import {eventBus} from "@/utils/eventBus";
-// 处理axios的钩子函数
+import { eventBus } from "@/utils/eventBus"
+
+// ========================== Axios 钩子函数 ==========================
 const axiosHooks: AxiosHooks = {
+    // 请求前拦截器
     requestInterceptorsHook(config) {
         NProgress.start()
         const { withToken, isParamsToData } = config.requestOptions
         const params = config.params || {}
         const headers = config.headers || {}
 
-        // 添加token
+        // ✅ 自动携带 Token
         if (withToken) {
             const token = getToken()
             headers.token = token
         }
-        // POST请求下如果无data，则将params视为data
+
+        // ✅ POST 请求时，如果没有 data，把 params 视为 data
         if (
             isParamsToData &&
             !Reflect.has(config, 'data') &&
@@ -33,27 +36,43 @@ const axiosHooks: AxiosHooks = {
             config.data = params
             config.params = {}
         }
+
         config.headers = headers
         return config
     },
+
+    // 请求异常
     requestInterceptorsCatchHook(err) {
         NProgress.done()
         return err
     },
+
+    // ========================== 响应拦截器 ==========================
     async responseInterceptorsHook(response) {
         NProgress.done()
+
+        // ✅ 1️⃣ 如果是文件流（Excel 导出、PDF、图片等），直接返回 Blob
+        if (response.config.responseType === 'blob') {
+            return response.data
+        }
+
+        // 取出扩展选项
         const { isTransformResponse, isReturnDefaultResponse } = response.config.requestOptions
 
-        //返回默认响应，当需要获取响应头及其他数据时可使用
+        // ✅ 2️⃣ 直接返回完整响应体（通常不处理）
         if (isReturnDefaultResponse) {
             return response
         }
-        // 是否需要对数据进行处理
+
+        // ✅ 3️⃣ 不需要转换数据时直接返回 data
         if (!isTransformResponse) {
             return response.data
         }
+
+        // ✅ 4️⃣ 统一业务返回结构解析
         const { code, data, show, msg } = response.data
         console.log('响应 code:', code)
+
         switch (code) {
             case RequestCodeEnum.SUCCESS:
                 if (show) {
@@ -61,6 +80,7 @@ const axiosHooks: AxiosHooks = {
                 }
                 return data
 
+            // 常规错误
             case RequestCodeEnum.PARAMS_TYPE_ERROR:
             case RequestCodeEnum.PARAMS_VALID_ERROR:
             case RequestCodeEnum.REQUEST_METHOD_ERROR:
@@ -75,23 +95,25 @@ const axiosHooks: AxiosHooks = {
                 msg && feedback.msgError(msg)
                 return Promise.reject(data)
 
+            // Token 失效
             case RequestCodeEnum.TOKEN_INVALID:
             case RequestCodeEnum.TOKEN_EMPTY:
                 clearAuthInfo()
                 router.push(PageEnum.LOGIN)
                 return Promise.reject()
+
+            // 谷歌验证弹窗
             case RequestCodeEnum.Need_Bind_GOOGLE_VERIFY:
-                // alert("拦截器GOOGLE");
-                // const popupStore = usePopupStore()
-                // popupStore.openGoogleBindPopup()
-                // return Promise.reject()
-                console.log("拦截器GOOGLE")
+                console.log("拦截器触发 Google 二次验证弹窗")
                 eventBus.emit('open-google-popup')
                 return Promise.reject()
+
             default:
                 return data
         }
     },
+
+    // 响应异常
     responseInterceptorsCatchHook(error) {
         NProgress.done()
         if (error.code !== AxiosError.ERR_CANCELED) {
@@ -101,40 +123,32 @@ const axiosHooks: AxiosHooks = {
     }
 }
 
+// ========================== 默认配置 ==========================
 const defaultOptions: AxiosRequestConfig = {
     timeout: configs.timeout,
-    // 基础接口地址
     baseURL: configs.baseUrl,
     headers: { 'Content-Type': ContentTypeEnum.JSON, version: configs.version },
 
-    // 处理 axios的钩子函数
     axiosHooks: axiosHooks,
-    // 每个接口可以单独配置
     requestOptions: {
-        // 是否将params视为data参数，仅限post请求
-        isParamsToData: true,
-        //是否返回默认的响应
-        isReturnDefaultResponse: false,
-        // 需要对返回数据进行处理
-        isTransformResponse: true,
-        // 接口拼接地址
+        isParamsToData: true, // POST 时把 params 视为 data
+        isReturnDefaultResponse: false, // 默认返回 data
+        isTransformResponse: true, // 是否处理返回数据
         urlPrefix: configs.urlPrefix,
-        // 忽略重复请求
         ignoreCancelToken: false,
-        // 是否携带token
-        withToken: true,
-        // 开启请求超时重新发起请求请求机制
-        isOpenRetry: true,
-        // 重新请求次数
-        retryCount: 2
+        withToken: true, // 默认携带 token
+        isOpenRetry: true, // 启用失败重试
+        retryCount: 2 // 重试次数
     }
 }
 
+// ========================== 实例构造函数 ==========================
 function createAxios(opt?: Partial<AxiosRequestConfig>) {
     return new Axios(
         // 深度合并
         merge(defaultOptions, opt || {})
     )
 }
+
 const request = createAxios()
 export default request

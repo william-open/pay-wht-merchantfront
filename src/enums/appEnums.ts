@@ -14,6 +14,18 @@ export enum MenuEnum {
 export enum AccountFinanceType {
     RECEIVE = 1,
     PAYOUT = 2,
+    BACK_RECHARGE  =3,
+    BACK_WITHDRAW =4,
+    BACK_ADD_BALANCE =5,
+    BACK_SUB_BALANCE =6,
+    BACK_FREEZE =7,
+    BACK_UNFREEZE =8,
+    API_PAY_AWARD =11,
+    API_PAYOUT_AWARD =21,
+    API_FREEZE =60,
+    API_UNFREEZE =61,
+    API_DELETE_FREEZE =62,
+
 }
 
 export enum AuditStatus {

@@ -26,8 +26,16 @@
           <el-table-column label="国家" prop="country" min-width="100" />
           <el-table-column label="余额" prop="money" min-width="100" />
           <el-table-column label="冻结金额" prop="freezeMoney" min-width="100" />
-          <el-table-column label="创建时间" prop="createTime" min-width="180" />
-          <el-table-column label="更新时间" prop="updateTime" min-width="180" />
+          <el-table-column label="创建时间"  prop="createTime" min-width="180">
+            <template #default="scope">
+              <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间"  prop="updateTime" >
+            <template #default="scope">
+              <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div class="flex mt-4 justify-end">
@@ -41,6 +49,7 @@
 import {financeBalance,financeCurrency } from "@/api/biz/finance";
 import { useDictOptions } from "@/hooks/useDictOptions";
 import { usePaging } from "@/hooks/usePaging";
+import {parseTime} from "@/utils/timeDate";
 
 // 表单数据
 const formData = reactive<any>({
